@@ -6,26 +6,17 @@ import java.io.*;
 import java.util.zip.GZIPInputStream;
 
 public class GzipFileMovieReader implements MovieReader{
-
-    private final MovieDeserializer deserializer;
     private final BufferedReader reader;
+    private final MovieDeserializer deserializer;
 
     public GzipFileMovieReader(File file, MovieDeserializer deserializer) throws IOException {
-        this.deserializer = deserializer;
         this.reader = readerOf(file);
+        this.deserializer = deserializer;
         this.skipHeader();
     }
 
-    private BufferedReader readerOf(File file) throws IOException {
-        return new BufferedReader(new InputStreamReader(gzipInputSreamOf(file)));
-    }
-
-    private InputStream gzipInputSreamOf(File file) throws IOException {
-        return new GZIPInputStream(new FileInputStream(file));
-    }
-
-    private void skipHeader() throws IOException {
-        this.reader.readLine();
+    private String skipHeader() throws IOException {
+        return this.reader.readLine();
     }
 
     @Override
@@ -33,13 +24,20 @@ public class GzipFileMovieReader implements MovieReader{
         return deserialize(reader.readLine());
     }
 
-    private Movie deserialize(String s) {
-        return s != null ? deserializer.deserialize(s) : null;
+    private Movie deserialize(String line) {
+        return line != null ? deserializer.deserialize(line) : null;
+    }
+
+    private static BufferedReader readerOf(File file) throws IOException {
+        return new BufferedReader(new InputStreamReader(gzipInputStreamOf(file)));
+    }
+
+    private static GZIPInputStream gzipInputStreamOf(File file) throws IOException {
+        return new GZIPInputStream(new FileInputStream(file));
     }
 
     @Override
     public void close() throws Exception {
         reader.close();
-
     }
 }
