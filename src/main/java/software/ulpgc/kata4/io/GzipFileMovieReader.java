@@ -10,7 +10,7 @@ public class GzipFileMovieReader implements MovieReader{
     private final MovieDeserializer deserializer;
     private final BufferedReader reader;
 
-    public GzipFileMovieReader(File file, MovieDeserializer deserializer, BufferedReader reader) throws IOException {
+    public GzipFileMovieReader(File file, MovieDeserializer deserializer) throws IOException {
         this.deserializer = deserializer;
         this.reader = readerOf(file);
         this.skipHeader();
